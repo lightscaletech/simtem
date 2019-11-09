@@ -1,0 +1,19 @@
+{
+  "name": "lightscale/simtem",
+  "description": "A simple library for rendering php templates",
+  "type": "library",
+  "license": "GPL-3.0-only",
+  "authors": [
+    {
+      "name": "Sam Light",
+      "email": "sam@lightscale.co.uk"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Lightscale\\Simtem\\": "src/"
+    }
+  }
+}
