@@ -13,6 +13,18 @@ class Views {
         self::$view_dir = $path;
     }
 
+    public static function aget($arr, $path, $def = NULL) {
+        if(is_string($path)) return self::aget($arr, [$path], $def);
+        if(!is_array($path)) return $def;
+
+        $k = array_shift($path);
+        $v = isset($arr[$k]) ? $arr[$k] : $def;
+        if(isset($path[0])) {
+            return self::aget($v, $path, $def);
+        }
+        return $v;
+    }
+
     private static function pop_state() {
         $old = self::$state;
         if(empty(self::$state_stack)) return self::$state = NULL;
@@ -29,7 +41,7 @@ class Views {
     }
 
     public static function get($p, $d = NULL) {
-        return Utils::aget(self::$state, $p, $d);
+        return self::aget(self::$state, $p, $d);
     }
 
     public static function include($view, $data = []) {
