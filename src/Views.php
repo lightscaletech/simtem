@@ -21,7 +21,7 @@ class Views {
         self::$view_dirs = $path;
     }
 
-    public function set_lookup_cache_handler($handler) {
+    public static function set_lookup_cache_handler($handler) {
         if(!($handler instanceof LookupCacheInterface)) throw new \Exception(
             'Lookup cache handler does not implement LookupCacheInterface'
         );
