@@ -4,13 +4,20 @@ namespace Lightscale\Simtem;
 
 class Views {
 
-    private static $view_dir = '';
+    private static $view_dirs = [];
 
     private static $state_stack = [];
     private static $state = NULL;
 
+    private static $path_lookup = [];
+
     public static function set_view_dir($path) {
-        self::$view_dir = $path;
+        self::set_view_dirs($path);
+    }
+
+    public static function set_view_dirs($dirs) {
+        $path = is_string($dirs) ? [$dirs] : $dirs;
+        self::$view_dirs = $path;
     }
 
     public static function aget($arr, $path, $def = NULL) {
@@ -19,9 +26,7 @@ class Views {
 
         $k = array_shift($path);
         $v = isset($arr[$k]) ? $arr[$k] : $def;
-        if(isset($path[0])) {
-            return self::aget($v, $path, $def);
-        }
+        if(isset($path[0])) return self::aget($v, $path, $def);
         return $v;
     }
 
@@ -44,10 +49,27 @@ class Views {
         return self::aget(self::$state, $p, $d);
     }
 
+    private static function get_path($view) {
+        $path = self::aget(self::$path_lookup, $view, false);
+        if($path) return $path;
+
+        foreach(self::$view_dirs as $dir) {
+            $path = $dir . $view . '.php';
+            if(file_exists($path)) break;
+        }
+
+        if(!$path) throw new \Exception(
+            "View file \"{$view}\" was not found in any template directory"
+        );
+
+        self::$path_lookup[$view] = $path;
+        return $path;
+    }
+
     public static function include($view, $data = []) {
         extract($data);
         self::push_state($data);
-        require(self::$view_dir . $view . '.php');
+        require(self::get_path($view));
         self::pop_state($data);
     }
 
