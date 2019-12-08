@@ -21,7 +21,7 @@ class Views {
         self::$view_dirs = $path;
     }
 
-    public static function set_lookup_cache_handler($handler) {
+    public function set_lookup_cache_handler($handler) {
         if(!($handler instanceof LookupCacheInterface)) throw new \Exception(
             'Lookup cache handler does not implement LookupCacheInterface'
         );
@@ -60,7 +60,7 @@ class Views {
 
     private static function get_path($view) {
         if(empty(self::$path_lookup) && self::$lookup_cache_handler)
-            self::$lookup_cache_handler->get();
+            self::$path_lookup = self::$lookup_cache_handler->get();
 
         $path = self::aget(self::$path_lookup, $view, false);
         if($path) return $path;
