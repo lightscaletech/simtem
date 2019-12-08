@@ -10,6 +10,7 @@ class Views {
     private static $state = NULL;
 
     private static $path_lookup = [];
+    private static $lookup_cache_handler = null;
 
     public static function set_view_dir($path) {
         self::set_view_dirs($path);
@@ -20,7 +21,15 @@ class Views {
         self::$view_dirs = $path;
     }
 
-    public static function aget($arr, $path, $def = NULL) {
+    public function set_lookup_cache_handler($handler) {
+        if(!($handler instanceof LookupCacheInterface)) throw new \Exception(
+            'Lookup cache handler does not implement LookupCacheInterface'
+        );
+
+        self::lookup_cache_handler = $handler;
+    }
+
+    private static function aget($arr, $path, $def = NULL) {
         if(is_string($path)) return self::aget($arr, [$path], $def);
         if(!is_array($path)) return $def;
 
@@ -50,6 +59,9 @@ class Views {
     }
 
     private static function get_path($view) {
+        if(empty(self::$path_lookup) && self::$lookup_cache_handler)
+            self::$lookup_cache_handler->get();
+
         $path = self::aget(self::$path_lookup, $view, false);
         if($path) return $path;
 
@@ -63,6 +75,10 @@ class Views {
         );
 
         self::$path_lookup[$view] = $path;
+
+        if(self::$lookup_cache_handler)
+            self::$lookup_cache_handler->set(self::$path_lookup);
+
         return $path;
     }
 
