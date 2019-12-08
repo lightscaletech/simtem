@@ -26,7 +26,7 @@ class Views {
             'Lookup cache handler does not implement LookupCacheInterface'
         );
 
-        self::lookup_cache_handler = $handler;
+        self::$lookup_cache_handler = $handler;
     }
 
     private static function aget($arr, $path, $def = NULL) {
