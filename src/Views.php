@@ -39,15 +39,13 @@ class Views {
         return $v;
     }
 
-    private static function pop_state() {
-        $old = self::$state;
-        if(empty(self::$state_stack)) return self::$state = NULL;
-        return (self::$state = array_shift(self::$state_stack));
+    private static function push_state($new) {
+        array_unshift(self::$state_stack, $new);
+        return $new;
     }
 
-    private static function push_state($new) {
-        if(self::$state !== NULL) self::$state_stack[] = self::$state;
-        self::$state = $new;
+    private static function pop_state() {
+        return array_shift(self::$state_stack);
     }
 
     public static function extend($new_state) {
@@ -82,11 +80,15 @@ class Views {
         return $path;
     }
 
-    public static function include($view, $data = []) {
-        extract($data);
-        self::push_state($data);
+    public static function include($view, $data = [], $render = NULL) {
+        $render = is_callable($render) ? $render : function() {};
+        $data['render'] = $render;
+
+        self::$state = self::push_state(self::$state);
+        self::$state = $data;
+        extract(self::$state);
         require(self::get_path($view));
-        self::pop_state($data);
+        self::$state = self::pop_state();
     }
 
     public static function render($view, $data = []) {
