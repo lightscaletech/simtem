@@ -52,7 +52,10 @@ class Views {
         return array_merge(self::$state, $new_state);
     }
 
-    public static function get($p, $d = NULL) {
+    public static function state() { return self::$state; }
+
+    public static function get($p = NULL, $d = NULL) {
+        if($p === NULL) return self::$state;
         return self::aget(self::$state, $p, $d);
     }
 
