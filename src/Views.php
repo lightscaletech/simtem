@@ -48,15 +48,19 @@ class Views {
         return array_shift(self::$state_stack);
     }
 
-    public static function extend($new_state) {
-        return array_merge(self::$state, $new_state);
+    public static function state() {
+        $r = self::$state;
+        if(isset($r['render'])) unset($r['render']);
+        return $r;
     }
 
-    public static function state() { return self::$state; }
+    public static function extend($new_state) {
+        return array_merge(self::state(), $new_state);
+    }
 
     public static function get($p = NULL, $d = NULL) {
-        if($p === NULL) return self::$state;
-        return self::aget(self::$state, $p, $d);
+        if($p === NULL) return self::state();
+        return self::aget(self::state(), $p, $d);
     }
 
     private static function get_path($view) {
