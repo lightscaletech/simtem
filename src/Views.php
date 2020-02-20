@@ -60,7 +60,7 @@ class Views {
 
     public static function get($p = NULL, $d = NULL) {
         if($p === NULL) return self::state();
-        return self::aget(self::state(), $p, $d);
+        return self::aget(self::$state, $p, $d);
     }
 
     private static function get_path($view) {
