@@ -87,15 +87,16 @@ class Views {
         return $path;
     }
 
-    public static function include($view, $data = [], $render = NULL) {
+    public static function include($view, $data = null, $render = null) {
         $render = is_callable($render) ? $render : function() {};
         $data['render'] = $render;
+        $shouldStack = $data !== null;
 
-        self::$state = self::push_state(self::$state);
+        if($shouldStack) self::$state = self::push_state(self::$state);
         self::$state = $data;
         extract(self::$state);
         require(self::get_path($view));
-        self::$state = self::pop_state();
+        if($shouldStack) self::$state = self::pop_state();
     }
 
     public static function render($view, $data = []) {
