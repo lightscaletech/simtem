@@ -23,7 +23,7 @@ class Views {
 
     public static function add_view_dir($dir) {
         self::$view_dirs[] = $dir;
-    };
+    }
 
     public static function set_lookup_cache_handler($handler) {
         if(!($handler instanceof LookupCacheInterface)) throw new \Exception(
