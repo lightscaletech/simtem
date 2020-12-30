@@ -71,7 +71,7 @@ class Views {
         $stack = self::$state_stack;
         $root = $stack[count($stack) - 1];
         if($p === NULL) return $root;
-        else self::aget(self::$state, $p, $d);
+        else return self::aget($root, $p, $d);
     }
 
     private static function get_path($view) {
@@ -103,7 +103,8 @@ class Views {
         $shouldStack = $data !== null;
 
         if($shouldStack) {
-            self::$state = self::push_state(self::$state);
+            if(self::$state !== null)
+                self::$state = self::push_state(self::$state);
             self::$state = $data;
         }
         extract(self::$state);
