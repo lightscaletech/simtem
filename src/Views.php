@@ -67,6 +67,13 @@ class Views {
         return self::aget(self::$state, $p, $d);
     }
 
+    public static function get_root($p = NULL, $d = NULL) {
+        $stack = self::$state_stack;
+        $root = $stack[count($stack) - 1];
+        if($p === NULL) return $root;
+        else self::aget(self::$state, $p, $d);
+    }
+
     private static function get_path($view) {
         if(empty(self::$path_lookup) && self::$lookup_cache_handler)
             self::$path_lookup = self::$lookup_cache_handler->get();
