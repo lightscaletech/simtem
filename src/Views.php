@@ -69,7 +69,11 @@ class Views {
 
     public static function get_root($p = NULL, $d = NULL) {
         $stack = self::$state_stack;
-        $root = $stack[count($stack) - 1];
+        $stack_count = count($stack);
+
+        if($stack_count === 0) $root = self::state;
+        else $root = $stack[$stack_count - 1];
+
         if($p === NULL) return $root;
         else return self::aget($root, $p, $d);
     }
