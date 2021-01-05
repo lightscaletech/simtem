@@ -71,7 +71,7 @@ class Views {
         $stack = self::$state_stack;
         $stack_count = count($stack);
 
-        if($stack_count === 0) $root = self::state;
+        if($stack_count === 0) $root = self::$state;
         else $root = $stack[$stack_count - 1];
 
         if($p === NULL) return $root;

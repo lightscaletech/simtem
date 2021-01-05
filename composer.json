@@ -1,7 +1,7 @@
 {
   "name": "lightscale/simtem",
   "description": "A simple library for rendering php templates",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "type": "library",
   "license": "GPL-3.0-only",
   "authors": [
