@@ -12,6 +12,7 @@ class Views {
     private static $path_lookup = [];
     private static $lookup_cache_handler = null;
 
+
     public static function set_view_dir($path) {
         self::set_view_dirs($path);
     }
@@ -122,6 +123,29 @@ class Views {
         $content = ob_get_contents();
         ob_end_clean();
         return $content;
+    }
+
+    public static function attrs($attrs) {
+        return trim(array_reduce(array_keys($attrs), function($r, $k) use($attrs) {
+            $v = $attrs[$k];
+            if($v === true) {
+                $r .= "{$k}=\"{$k}\" ";
+            }
+            else if($v) {
+                $v = esc_attr($v);
+                $r .= "{$k}=\"{$v}\" ";
+            }
+            return $r;
+        }, ''));
+    }
+
+    public static function classes(array $classes) : string {
+        $classes = array_filter(array_map(function($k) use ($classes) {
+            return is_int($k) ? $classes[$k] : ($classes[$k] ? $k : null);
+        }, array_keys($classes)));
+
+        $classes = implode(' ', $classes);
+        return "class=\"{$classes}\"";
     }
 
 }
