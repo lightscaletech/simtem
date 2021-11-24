@@ -125,26 +125,45 @@ class Views {
         return $content;
     }
 
+    public static function classList(...$classesArgs) : string {
+        $result = '';
+
+        foreach($classesArgs as $classes) {
+            if(is_string($classes) && !empty($classes = trim($classes))) {
+                $result .= ' ' . $classes;
+            }
+            else if(is_array($classes)) {
+                $classes = array_filter(array_map(function($k) use ($classes) {
+                    return is_int($k) ? $classes[$k] : ($classes[$k] ? $k : null);
+                }, array_keys($classes)));
+                $result .= ' ' . implode(' ', $classes);
+            }
+        }
+
+        return trim($result);
+    }
+
     public static function attrs($attrs) {
         return trim(array_reduce(array_keys($attrs), function($r, $k) use($attrs) {
             $v = $attrs[$k];
+
+            if($k === 'class') {
+                $v = self::classList($v);
+            }
+
             if($v === true) {
                 $r .= "{$k}=\"{$k}\" ";
             }
             else if($v) {
-                $v = esc_attr($v);
+                $v = htmlspecialchars($v);
                 $r .= "{$k}=\"{$v}\" ";
             }
             return $r;
         }, ''));
     }
 
-    public static function classes(array $classes) : string {
-        $classes = array_filter(array_map(function($k) use ($classes) {
-            return is_int($k) ? $classes[$k] : ($classes[$k] ? $k : null);
-        }, array_keys($classes)));
-
-        $classes = implode(' ', $classes);
+    public static function classes(...$classes) : string {
+        $classes = call_user_func_array(self::class . '::classList', $classes);
         return "class=\"{$classes}\"";
     }
 
